@@ -1,0 +1,33 @@
+# keep the image small
+__pycache__
+*.pyc
+*.pyo
+.pytest_cache
+.venv
+venv
+env
+
+# editor / OS noise
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+
+# git
+.git
+.gitignore
+
+# server logs from local dev
+server.out
+server.err
+
+# docker meta
+Dockerfile
+.dockerignore
+docker-compose.yml
+
+# anything secret-ish
+.env
+.env.*
+*.key
+*.pem

@@ -1,0 +1,52 @@
+
+=== Slide 1 ===
+  [4] p0: Team
+  [5] p0: Team Sahay
+  [5] p1: Member 1  —  Role
+  [5] p2: Member 2  —  Role
+  [5] p3: Member 3  —  Role
+  [5] p4: Member 4  —  Role
+
+=== Slide 2 ===
+  [0] p0: Problem Statement & Theme
+  [1] p0: Problem:  India runs 3,000+ welfare schemes worth ₹15+ lakh crore — yet under 30% of eligible citizens ever claim them. Discovery is broken: portals are English-first, jargon-heavy, and scattered across 50+ ministry websites.
+  [1] p1: Impact:  ~800 million Bharat citizens — farmers, widows, gig workers, artisans, the elderly — leave entitled benefits on the table every year. A widow in UP doesn't know a ₹6,000/yr pension exists in her name.
+  [1] p2: Theme Alignment:  AI for Social Good × Bharat-first. A multilingual, voice-enabled AI navigator that turns natural Hindi/Hinglish speech into a ranked list of schemes the user actually qualifies for.
+
+=== Slide 3 ===
+  [6] p0: Solution
+  [7] p1: Solution Overview:  Sahay (सहाय) is an AI Welfare Navigator. The user types or speaks freely in Hindi / Hinglish / English — "58 saal, kisan, 1.5 acre, beti ki padhai" — and Sahay returns the top schemes with eligibility, documents required, and how-to-apply links.
+  [7] p2: Key Features:  (1) Bilingual chat + voice input  (2) Signal-extraction engine that catches age, occupation, land-size, life-events from free text  (3) 25 real central-govt schemes (PM-KISAN, Ayushman Bharat, MUDRA, Ujjwala, PMAY, Vishwakarma, SSY, NSAP pensions, e-Shram…)  (4) One-click demo personas — Ramesh, Lakshmi, Priya, Irfan  (5) Animated total-₹-unlocked counter that quantifies the impact live.
+  [7] p3: Unique Value:  Most schemes-search tools are keyword forms in English. Sahay is conversational, vernacular-first, and returns a *reasoned* match — every card explains *why* this scheme fits this person.
+
+=== Slide 4 ===
+  [6] p0: Architecture
+  [7] p0: Tech Stack:  Python + Flask backend  •  Vanilla JS / HTML / CSS frontend  •  Claude Haiku 4.5 for AI enrichment  •  JSON scheme corpus (offline-first, zero-DB).
+  [7] p1: Data Flow:  User speaks/types in Hindi or English → signal extractor pulls age, occupation, land, life-events → scheme scorer ranks 25 schemes → build_why() attaches plain-language reasons → frontend renders cards + ₹-counter.
+  [7] p2: APIs:  Anthropic Claude API (Haiku 4.5) for "why this scheme" copy  •  Web Speech API for voice input  •  Internal /api/chat, /api/schemes, /api/personas.
+
+=== Slide 5 ===
+  [6] p0: Market Research & Analysis
+  [7] p0: Target Users:  ~800M citizens of Bharat — farmers, widows, senior citizens, gig & platform workers, MSME artisans, students from low-income families. Primary entry point: rural & tier-2/3 smartphones via WhatsApp-style chat or voice.
+  [7] p1: Market Size:  3,000+ central + state schemes  •  ₹15+ lakh crore total annual welfare outlay  •  ~70% leakage / under-claim gap = ₹10+ lakh crore worth of unclaimed benefits sitting on the table every year.
+  [7] p2: Revenue Model:  (1) Govt / state-mission licensing (white-label for Common Service Centres, Panchayats)  (2) CSR + foundation grants tied to claim-conversion metrics  (3) NBFC / fintech partnerships — qualified-lead handoff for MUDRA, Stand-Up India, KCC loans.
+  [7] p3: Expected Growth:  Pilot in 1 state via CSC network → 10M users in 12 months → scale to all 22 official languages and 250K Common Service Centres → measurable lift in scheme-claim rate is the north-star metric.
+
+=== Slide 6 ===
+  [6] p0: Future Scope
+  [7] p0: WhatsApp & IVR Channels:  Meet Bharat where it already is — Sahay over WhatsApp Business API + a toll-free IVR for feature-phone users with no smartphone.
+  [7] p1: Full 22-Language Coverage:  Extend signal-map and scheme copy to all 8th-Schedule languages — Marathi, Tamil, Telugu, Bengali, Punjabi, Odia, Assamese, Kannada, Malayalam, Gujarati, and more.
+  [7] p2: Document-Auto-Fill & Application Tracking:  OCR Aadhaar/ration card → pre-fill scheme forms → submit to UMANG/state portals → track application status end-to-end inside Sahay.
+  [7] p3: State-Scheme + Private-Welfare Expansion:  Grow from 25 central schemes to 3,000+ central + state + corporate-CSR schemes, with eligibility rules versioned per state.
+  [7] p4: Impact Dashboards for Govt Partners:  Live dashboards for Ministries / NITI Aayog showing district-level claim-rate uplift, scheme demand heatmaps, and unmet-need signals.
+
+=== Slide 7 ===
+  [6] p0: TRAE Account Upholding
+  [7] p0: Screenshot of TRAE dashboard for each teammate — to be added before submission.
+  [7] p1: Username visible in every screenshot.
+  [7] p2: Proof of participation for all teammates attached on this slide.
+  [7] p3: Placeholder: insert screenshots in the image area below.
+
+=== Slide 8 ===
+  [1] p0: Thank
+  [2] p0: you!

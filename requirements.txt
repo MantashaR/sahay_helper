@@ -1,0 +1,7 @@
+Flask>=3.0
+pypdf>=4.0
+# Optional — only needed if you want Claude-powered natural language understanding.
+# Set ANTHROPIC_API_KEY in your environment to enable it.
+anthropic>=0.40
+# Production WSGI server used inside the Docker image.
+gunicorn>=21.2

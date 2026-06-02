@@ -1,0 +1,337 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sahay — AI Welfare Navigator for Bharat</title>
+  <link rel="stylesheet" href="/static/style.css?v=2" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Tiro+Devanagari+Hindi&display=swap" rel="stylesheet" />
+</head>
+<body>
+  <!-- floating animated background blobs -->
+  <div class="bg-blobs" aria-hidden="true">
+    <span class="blob blob-1"></span>
+    <span class="blob blob-2"></span>
+    <span class="blob blob-3"></span>
+  </div>
+
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo">स</div>
+      <div>
+        <h1>Sahay</h1>
+        <p class="tagline">AI Welfare Navigator for Bharat · <span class="hindi">सहाय</span></p>
+      </div>
+    </div>
+
+    <div class="topbar-actions">
+      <div class="stats">
+        <div><strong id="scheme-count">0</strong><span>Schemes</span></div>
+        <div><strong>22</strong><span>Languages*</span></div>
+        <div><strong>₹2L+</strong><span>Avg unlocked</span></div>
+      </div>
+      <button id="lang-toggle" class="icon-btn" title="Switch voice language">
+        <span id="lang-label">हिं</span>
+      </button>
+      <button id="theme-toggle" class="icon-btn" title="Toggle dark / light">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="badge">🇮🇳 Built for Bharat · 800M+ citizens left out of welfare</div>
+      <h2>Find every benefit you deserve — <span class="gradient-text">in 60 seconds</span>.</h2>
+      <p>India runs 3,000+ welfare schemes. Less than 30% of eligible citizens claim them.<br/>
+        Tell Sahay your story — in Hindi or English, by voice or text — and watch the schemes appear.</p>
+
+      <div class="personas">
+        <div class="personas-label">
+          <span class="dot"></span> Try a demo persona
+        </div>
+        <div id="persona-buttons"></div>
+      </div>
+    </section>
+
+    <!-- Middleman fraud advisory: shows after first match -->
+    <section id="fraud-banner" class="fraud-banner hidden" role="alert">
+      <div class="fraud-banner-icon">🛡️</div>
+      <div class="fraud-banner-body">
+        <strong id="fraud-headline">All schemes are FREE — never pay any agent.</strong>
+        <p id="fraud-detail"></p>
+        <div class="fraud-channels">
+          <span>✓ Official portal</span>
+          <span>✓ Your bank</span>
+          <span>✓ Gram Panchayat</span>
+          <span>✓ CSC (Common Service Centre)</span>
+        </div>
+      </div>
+      <button class="fraud-dismiss" id="fraud-dismiss" title="Dismiss">×</button>
+    </section>
+
+    <!-- Total benefits banner: shows up after first match -->
+    <section id="value-banner" class="value-banner hidden">
+      <div class="value-banner-inner">
+        <div class="value-meta">
+          <span class="value-label">Estimated annual benefits unlocked</span>
+          <span class="value-sub">Based on headline scheme values · indicative</span>
+        </div>
+        <div class="value-amount">
+          <span class="rupee">₹</span><span id="value-counter">0</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="chat-panel">
+        <div class="mode-tabs" role="tablist">
+          <button class="mode-tab active" data-mode="chat" role="tab">💬 Tell your story</button>
+          <button class="mode-tab" data-mode="form" role="tab">📋 Quick form</button>
+        </div>
+
+        <!-- ============== Quick form view ============== -->
+        <div id="form-view" class="form-view" hidden>
+          <form id="eligibility-form" class="eligibility-form">
+            <p class="form-intro">Answer a few quick questions — get exact eligibility, not just keyword guesses.</p>
+
+            <div class="form-grid">
+              <label class="field">
+                <span>Age</span>
+                <input type="number" name="age" min="0" max="120" placeholder="e.g. 42" />
+              </label>
+
+              <label class="field">
+                <span>Gender</span>
+                <select name="gender">
+                  <option value="">—</option>
+                  <option value="female">Female</option>
+                  <option value="male">Male</option>
+                  <option value="other">Other</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Annual household income (₹)</span>
+                <input type="number" name="annual_income" min="0" step="1000" placeholder="e.g. 150000" />
+              </label>
+
+              <label class="field">
+                <span>Caste / Category</span>
+                <select name="caste">
+                  <option value="">—</option>
+                  <option value="general">General</option>
+                  <option value="sc">SC</option>
+                  <option value="st">ST</option>
+                  <option value="obc">OBC</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Area</span>
+                <select name="area">
+                  <option value="">—</option>
+                  <option value="rural">Rural / Village</option>
+                  <option value="urban">Urban / City</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Occupation</span>
+                <select name="occupation">
+                  <option value="">—</option>
+                  <option value="farmer">Farmer</option>
+                  <option value="artisan">Artisan / Craftsperson</option>
+                  <option value="business">Small business / Shop</option>
+                  <option value="gig">Gig / Delivery / Driver</option>
+                  <option value="construction">Construction / Labour</option>
+                  <option value="domestic">Domestic worker</option>
+                  <option value="student">Student</option>
+                  <option value="housewife">Housewife</option>
+                  <option value="unemployed">Unemployed</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Land (acres) — if farmer</span>
+                <input type="number" name="land_acres" min="0" step="0.1" placeholder="e.g. 1.5" />
+              </label>
+
+              <label class="field">
+                <span>State</span>
+                <input type="text" name="state" placeholder="e.g. Bihar" />
+              </label>
+            </div>
+
+            <div class="checks">
+              <label class="check"><input type="checkbox" name="has_pucca_house" /> I own a pucca (concrete) house</label>
+              <label class="check"><input type="checkbox" name="has_bank_account" checked /> I have a bank account</label>
+              <label class="check"><input type="checkbox" name="is_widow" /> I am a widow</label>
+              <label class="check"><input type="checkbox" name="is_pregnant" /> I am pregnant</label>
+              <label class="check"><input type="checkbox" name="has_disability" /> I have a disability</label>
+              <label class="check"><input type="checkbox" name="is_student" /> I am a student</label>
+              <label class="check"><input type="checkbox" name="is_minority" /> I belong to a minority community</label>
+              <label class="check"><input type="checkbox" name="has_daughter_under_10" /> I have a daughter under 10</label>
+              <label class="check"><input type="checkbox" name="girl_graduated" /> Girl in family has graduated</label>
+            </div>
+
+            <button type="submit" class="form-submit">
+              <span>Check my eligibility</span>
+              <span class="btn-arrow">→</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- ============== Chat view ============== -->
+        <div id="messages" class="messages">
+          <div class="msg assistant">
+            <div class="avatar">स</div>
+            <div class="bubble">
+              <p>Namaste! 🙏 I'm Sahay. Tell me about yourself — your age, work, family,
+                and what you need help with. I'll find every government scheme you may qualify for.</p>
+              <p class="hint">Try: <em>"58-year-old farmer with 1.5 acres"</em> ·
+                <em>"chota dukaan hai, loan chahiye"</em> · or tap 🎙 and speak.</p>
+            </div>
+          </div>
+        </div>
+
+        <form id="chat-form" class="composer">
+          <button type="button" id="mic-btn" title="Voice input (Hindi/English)">
+            <span class="mic-icon">🎙</span>
+            <span class="waveform" aria-hidden="true">
+              <span></span><span></span><span></span><span></span><span></span>
+            </span>
+          </button>
+          <textarea id="chat-input" rows="2" placeholder="Tell Sahay about yourself…  (Hindi, Hinglish, or English)"></textarea>
+          <button type="submit" id="send-btn">
+            <span class="btn-text">Find schemes</span>
+            <span class="btn-arrow">→</span>
+          </button>
+        </form>
+        <div id="mic-status" class="mic-status"></div>
+      </div>
+
+      <aside class="results-panel">
+        <div class="results-header">
+          <div>
+            <h3>Matched schemes</h3>
+            <p class="results-sub" id="results-sub">Click any card to expand · share · save</p>
+          </div>
+          <span id="match-count" class="pill">0</span>
+        </div>
+
+        <div id="filter-bar" class="filter-bar hidden"></div>
+
+        <div id="results" class="results">
+          <div class="empty">
+            <div class="empty-icon">📋</div>
+            <p>Schemes you qualify for will appear here.</p>
+            <p class="hint">Try a demo persona above ↑</p>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <!-- Document Readiness Checker -->
+    <section id="doc-checker" class="doc-checker hidden">
+      <div class="doc-header">
+        <div>
+          <h3>📄 Document Readiness Checker</h3>
+          <p class="doc-sub" id="doc-summary">Tick what you already have. We'll tell you which schemes you can apply for right now.</p>
+        </div>
+        <div class="doc-progress">
+          <div class="doc-progress-ring">
+            <svg width="64" height="64" viewBox="0 0 64 64">
+              <circle cx="32" cy="32" r="28" fill="none" stroke="var(--border)" stroke-width="6"/>
+              <circle id="doc-progress-circle" cx="32" cy="32" r="28" fill="none"
+                      stroke="url(#docGrad)" stroke-width="6" stroke-linecap="round"
+                      stroke-dasharray="175.93" stroke-dashoffset="175.93"
+                      transform="rotate(-90 32 32)"/>
+              <defs>
+                <linearGradient id="docGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#ff6b35"/>
+                  <stop offset="100%" stop-color="#138808"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span id="doc-progress-text">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="doc-body">
+        <div class="doc-checklist" id="doc-checklist"></div>
+        <div class="doc-upload">
+          <h4>📸 Verify your documents</h4>
+          <p>Upload a photo of any document — we'll check it's readable and correctly typed.</p>
+          <label class="doc-drop" id="doc-drop">
+            <input type="file" id="doc-file" accept="image/*,.pdf" multiple hidden />
+            <div class="doc-drop-inner">
+              <div class="doc-drop-icon">⬆</div>
+              <strong>Click or drop file</strong>
+              <small>JPG, PNG, PDF · max 5 MB</small>
+            </div>
+          </label>
+          <div class="doc-uploads" id="doc-uploads"></div>
+
+          <h4 style="margin-top:18px">🧠 Teach Sahay a new scheme</h4>
+          <p>Drop any official government PDF — Sahay reads, indexes, and quotes from it live.</p>
+          <label class="doc-drop pdf-drop" id="pdf-drop">
+            <input type="file" id="pdf-file" accept=".pdf,.txt" hidden />
+            <div class="doc-drop-inner">
+              <div class="doc-drop-icon" style="background:linear-gradient(135deg,#138808,#0d6b04)">📄</div>
+              <strong>Drop a scheme PDF</strong>
+              <small>Indexed into knowledge base instantly</small>
+            </div>
+          </label>
+          <div id="pdf-status" class="pdf-status"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- thinking overlay -->
+    <div id="thinking" class="thinking hidden" aria-hidden="true">
+      <div class="thinking-card">
+        <div class="thinking-orb"></div>
+        <ul class="thinking-steps">
+          <li data-step="parse">📝 Understanding your story…</li>
+          <li data-step="extract">🔍 Extracting age, occupation, family details…</li>
+          <li data-step="match">🇮🇳 Matching against 3,000+ welfare schemes…</li>
+          <li data-step="rank">🎯 Ranking by eligibility fit…</li>
+        </ul>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>Prototype · 25 representative central schemes from myScheme.gov.in, pmjay.gov.in, nsap.nic.in.
+       Production version: Bhashini API for 22 languages, DigiLocker for auto-fill, WhatsApp bot for distribution.</p>
+  </footer>
+
+  <!-- Source citation modal -->
+  <div id="source-modal" class="source-modal hidden" role="dialog" aria-modal="true">
+    <div class="source-modal-backdrop"></div>
+    <div class="source-modal-card">
+      <header>
+        <div>
+          <span class="source-tag">📄 OFFICIAL SOURCE</span>
+          <h3 id="source-title">…</h3>
+          <p id="source-subtitle"></p>
+        </div>
+        <button class="source-close" id="source-close" title="Close">×</button>
+      </header>
+      <div id="source-body" class="source-body"></div>
+      <footer>
+        <p class="source-note">Retrieved live via TF-IDF over the official scheme document. The full guideline is bundled with this prototype — production version would scrape myScheme.gov.in and ministry portals.</p>
+      </footer>
+    </div>
+  </div>
+
+  <!-- canvas for celebration confetti -->
+  <canvas id="confetti" aria-hidden="true"></canvas>
+
+  <script src="/static/app.js?v=2"></script>
+</body>
+</html>
