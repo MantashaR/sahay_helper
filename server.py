@@ -350,6 +350,106 @@ SIGNAL_MAP = {
     "bima": ["insurance"],
     "accident": ["accident"],
     "death": ["insurance", "widow"],
+
+    # ---- Native-script keywords (Hindi Devanagari) ---------------------------
+    # Chrome's hi-IN speech recogniser returns Devanagari, not romanised text,
+    # so these are essential for Hindi *voice* input to match anything.
+    "किसान": ["farmer", "agriculture"],
+    "खेती": ["farmer", "agriculture"],
+    "खेत": ["farmer", "land"],
+    "फसल": ["farmer", "crop"],
+    "जमीन": ["farmer", "land"],
+    "ज़मीन": ["farmer", "land"],
+    "महिला": ["woman"],
+    "औरत": ["woman"],
+    "पत्नी": ["woman"],
+    "बेटी": ["girl"],
+    "लड़की": ["girl"],
+    "गर्भवती": ["pregnant"],
+    "गर्भ": ["pregnant"],
+    "शादी": ["marriage"],
+    "विवाह": ["marriage"],
+    "बुजुर्ग": ["senior"],
+    "बूढ़ा": ["senior"],
+    "बुढ़ापा": ["senior", "pension"],
+    "पेंशन": ["pension"],
+    "विधवा": ["widow"],
+    "मजदूर": ["worker"],
+    "मज़दूर": ["worker"],
+    "काम": ["worker"],
+    "बेरोजगार": ["worker"],
+    "बेरोज़गार": ["worker"],
+    "कारीगर": ["artisan"],
+    "बढ़ई": ["artisan"],
+    "दर्जी": ["artisan"],
+    "लोहार": ["artisan"],
+    "कुम्हार": ["artisan"],
+    "बुनकर": ["artisan"],
+    "लोन": ["loan"],
+    "कर्ज": ["loan"],
+    "कर्ज़ा": ["loan"],
+    "व्यापार": ["loan", "business"],
+    "व्यवसाय": ["loan", "business"],
+    "दुकान": ["loan", "business"],
+    "बैंक": ["bank"],
+    "खाता": ["bank"],
+    "बीमारी": ["health"],
+    "बीमार": ["health"],
+    "इलाज": ["health"],
+    "अस्पताल": ["health"],
+    "मकान": ["housing"],
+    "घर": ["housing"],
+    "छात्र": ["education"],
+    "विद्यार्थी": ["education"],
+    "पढ़ाई": ["education"],
+    "स्कूल": ["education"],
+    "कॉलेज": ["education"],
+    "छात्रवृत्ति": ["education"],
+    "गैस": ["lpg"],
+    "सिलेंडर": ["lpg"],
+    "राशन": ["food"],
+    "गरीब": ["bpl"],
+    "गरीबी": ["bpl"],
+    "बीमा": ["insurance"],
+    "दुर्घटना": ["accident"],
+
+    # ---- Bengali (bn-IN) -----------------------------------------------------
+    "কৃষক": ["farmer", "agriculture"],
+    "চাষ": ["farmer", "agriculture"],
+    "মহিলা": ["woman"],
+    "মেয়ে": ["girl"],
+    "বিধবা": ["widow"],
+    "বয়স্ক": ["senior"],
+    "পেনশন": ["pension"],
+    "ঋণ": ["loan"],
+    "ব্যবসা": ["loan", "business"],
+    "ব্যাংক": ["bank"],
+    "ছাত্র": ["education"],
+    "পড়াশোনা": ["education"],
+    "বাড়ি": ["housing"],
+    "স্বাস্থ্য": ["health"],
+    "অসুস্থ": ["health"],
+    "শ্রমিক": ["worker"],
+    "গরিব": ["bpl"],
+
+    # ---- Tamil (ta-IN) -------------------------------------------------------
+    "விவசாயி": ["farmer", "agriculture"],
+    "விவசாயம்": ["farmer", "agriculture"],
+    "பெண்": ["woman"],
+    "பெண்குழந்தை": ["girl"],
+    "விதவை": ["widow"],
+    "முதியோர்": ["senior"],
+    "ஓய்வூதியம்": ["pension"],
+    "கடன்": ["loan"],
+    "வணிகம்": ["loan", "business"],
+    "வங்கி": ["bank"],
+    "மாணவர்": ["education"],
+    "படிப்பு": ["education"],
+    "வீடு": ["housing"],
+    "உடல்நலம்": ["health"],
+    "மருத்துவம்": ["health"],
+    "தொழிலாளி": ["worker"],
+    "ஏழை": ["bpl"],
 }
 
 # Map signals -> list of scheme IDs that strongly match. Multiple signals
@@ -400,7 +500,10 @@ SIGNAL_TO_SCHEMES = {
 }
 
 
-WORD_RE = re.compile(r"[a-zA-Zऀ-ॿ]+")
+# Latin + Devanagari (Hindi) + Bengali + Tamil so spoken/typed input in any of
+# the four supported languages tokenizes correctly (Chrome returns native script
+# for hi-IN / ta-IN / bn-IN voice input).
+WORD_RE = re.compile(r"[a-zA-Zऀ-ॿঀ-৿஀-௿]+")
 
 
 def extract_signals(text):
@@ -644,7 +747,9 @@ SOURCE_SCHEME_MAP = {
     "ujjwala-yojana.txt":        ["ujjwala"],
 }
 
-WORD_RE = re.compile(r"[a-zA-Z]+")  # restrict to ASCII for TF-IDF; lowercase later
+# NOTE: tokenize() below reuses the multilingual WORD_RE defined above. (A
+# previous ASCII-only redefinition here silently broke Hindi/Tamil/Bengali
+# tokenization for the signal matcher — keep it multilingual.)
 
 STOPWORDS = set("""
 a an and the of in on at to from for by with as is are was were be been being

@@ -218,20 +218,30 @@ async function handlePdfUpload (file) {
 function speak (text) {
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = LANGS[langIdx].code;
-  utter.rate = 0.95;
-  utter.pitch = 1.0;
-  // try to find a voice in that language
-  const voices = window.speechSynthesis.getVoices();
-  const match = voices.find(v => v.lang === utter.lang) ||
-                voices.find(v => v.lang.startsWith(utter.lang.split('-')[0]));
-  if (match) utter.voice = match;
-  window.speechSynthesis.speak(utter);
-}
-// pre-load voices on Chrome
-if ('speechSynthesis' in window) {
-  window.speechSynthesis.onvoiceschanged = () => {};
+
+  const utterInLang = () => {
+    const lang = LANGS[langIdx].code;
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = lang;
+    utter.rate = 0.95;
+    utter.pitch = 1.0;
+    const base = lang.split('-')[0];
+    const voices = window.speechSynthesis.getVoices();
+    // exact match → same base language → any Indian voice as last resort
+    const match = voices.find(v => v.lang.replace('_', '-') === lang) ||
+                  voices.find(v => v.lang.replace('_', '-').split('-')[0] === base) ||
+                  voices.find(v => /-IN$/i.test(v.lang.replace('_', '-')));
+    if (match) utter.voice = match;
+    window.speechSynthesis.speak(utter);
+  };
+
+  // Chrome populates getVoices() asynchronously — wait for them on first use,
+  // otherwise the very first "read aloud" falls back to the wrong language.
+  if (window.speechSynthesis.getVoices().length) {
+    utterInLang();
+  } else {
+    window.speechSynthesis.addEventListener('voiceschanged', utterInLang, { once: true });
+  }
 }
 
 function renderMarkdownLite (text) {
