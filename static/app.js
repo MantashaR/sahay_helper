@@ -852,12 +852,32 @@ langToggle.addEventListener('click', () => {
 
 // =================================================================== Web Speech voice
 let recognition = null;
+let micPrimed = false;        // have we been granted mic permission this session?
+let retriedInEnglish = false; // avoid infinite language-fallback loops
 const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+function setMicError (msg) {
+  micStatus.textContent = msg;
+  micBtn.classList.remove('listening');
+}
+
+function startRecognition () {
+  try {
+    recognition.lang = LANGS[langIdx].code;
+    retriedInEnglish = false;
+    recognition.start();
+  } catch (e) {
+    // start() throws "InvalidStateError" if already running — reset.
+    try { recognition.stop(); } catch (_) {}
+    micStatus.textContent = 'Mic busy — tap again.';
+  }
+}
 
 if (SpeechRec) {
   recognition = new SpeechRec();
   recognition.continuous = false;
   recognition.interimResults = true;
+  recognition.maxAlternatives = 1;
   recognition.lang = LANGS[langIdx].code;
 
   recognition.onstart = () => {
@@ -867,28 +887,56 @@ if (SpeechRec) {
   recognition.onresult = (e) => {
     const transcript = Array.from(e.results).map(r => r[0].transcript).join(' ');
     input.value = transcript;
+    if (Array.from(e.results).some(r => r.isFinal)) input.focus();
   };
   recognition.onerror = (e) => {
-    micStatus.textContent = `Mic: ${e.error}. Try typing instead.`;
-    micBtn.classList.remove('listening');
+    // Hindi/Tamil/Bengali voice pack may be missing — retry once in English.
+    if (e.error === 'language-not-supported' && !retriedInEnglish && recognition.lang !== 'en-IN') {
+      retriedInEnglish = true;
+      micStatus.textContent = `${recognition.lang} voice not installed — switching to English…`;
+      recognition.lang = 'en-IN';
+      setTimeout(() => { try { recognition.start(); } catch (_) {} }, 250);
+      return;
+    }
+    const MAP = {
+      'not-allowed':         '🔒 Mic blocked. Click the 🔒 / mic icon in the address bar → Allow → reload.',
+      'service-not-allowed': '🔒 Mic blocked in site settings. Allow it, then reload the page.',
+      'no-speech':           "Didn't catch anything — tap 🎙 and speak again.",
+      'audio-capture':       '🎤 No microphone detected. Check it\'s plugged in / enabled.',
+      'network':             'Speech service unreachable — check your internet connection.',
+      'aborted':             '',
+    };
+    setMicError(e.error in MAP ? MAP[e.error] : `Mic error: ${e.error}. Try typing instead.`);
   };
   recognition.onend = () => {
     micBtn.classList.remove('listening');
-    micStatus.textContent = '';
+    if (micStatus.textContent === '🎙 Listening… speak naturally') micStatus.textContent = '';
   };
 
-  micBtn.addEventListener('click', () => {
-    if (micBtn.classList.contains('listening')) recognition.stop();
-    else {
-      try { recognition.lang = LANGS[langIdx].code; recognition.start(); }
-      catch (e) { micStatus.textContent = 'Mic busy — try again.'; }
+  micBtn.addEventListener('click', async () => {
+    if (micBtn.classList.contains('listening')) { recognition.stop(); return; }
+
+    // Explicitly request mic permission the first time — this surfaces a clear
+    // browser prompt and a precise error if the user has blocked the mic.
+    if (!micPrimed && navigator.mediaDevices?.getUserMedia) {
+      micStatus.textContent = 'Requesting microphone access…';
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        stream.getTracks().forEach(t => t.stop()); // only needed the permission grant
+        micPrimed = true;
+      } catch (err) {
+        setMicError('🔒 Microphone permission denied. Click the 🔒 in the address bar → Allow → reload.');
+        return;
+      }
     }
+    startRecognition();
   });
 } else {
   micBtn.disabled = true;
-  micBtn.title = 'Voice not supported in this browser (try Chrome / Edge)';
+  micBtn.title = 'Voice input needs Chrome or Edge (desktop or Android)';
   micBtn.style.opacity = 0.4;
   micBtn.style.cursor = 'not-allowed';
+  micStatus.textContent = 'Tip: voice works in Chrome / Edge.';
 }
 
 // =================================================================== utils
