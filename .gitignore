@@ -27,3 +27,12 @@ server.err
 # unrelated nested project (own git/venv/secret)
 byoc-workshop-template/
 _vidframes/
+
+# built docker image artifact (large)
+*.tar
+sahay-image.tar
+
+# pitch deck — kept local, not part of the code repo
+*.pptx
+
+.vercel

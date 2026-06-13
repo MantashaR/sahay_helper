@@ -31,3 +31,17 @@ docker-compose.yml
 .env.*
 *.key
 *.pem
+
+# unrelated nested project (own git/venv/secret) — must never enter the image
+byoc-workshop-template/
+_vidframes/
+
+# build/pitch artifacts not needed at runtime
+*.pptx
+fill_ppt.py
+inspect_ppt.py
+verify_ppt.py
+verify_out.txt
+README.txt
+README.md
+HOW-TO-RUN-SAHAY.txt
