@@ -1,0 +1,20 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "schemes.json",
+          "sources/**",
+          "templates/**",
+          "static/**"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "server.py" }
+  ]
+}
